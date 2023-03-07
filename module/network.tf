@@ -30,8 +30,8 @@ resource "aws_internet_gateway" "igw" {
 
 
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.my_eip.*.id
-  subnet_id     = aws_subnet.private_subnet.*.id
+  allocation_id = aws_eip.my_eip[0].id
+  subnet_id     = aws_subnet.private_subnet[0].id
 
   tags = {
     Name = "gw-NAT"
@@ -47,7 +47,7 @@ resource "aws_subnet" "public_subnet" {
   
  
   cidr_block        = var.subnet_cidr_public[count.index]
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  availability_zone = var.availability_zone[count.index]
 
   tags = {
     Name = "public_subnet_${count.index}"
@@ -58,7 +58,7 @@ resource "aws_subnet" "private_subnet" {
   count             = var.subnet_count.private 
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = var.subnet_cidr_private[count.index]
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  availability_zone = var.availability_zone[count.index]
   tags = {
     Name = "private_subnet_${count.index}"
   }
